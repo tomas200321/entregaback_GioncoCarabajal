@@ -1,0 +1,77 @@
+<h1>Productos (realtime)</h1>
+
+<div id="productForm">
+  <h3>Crear producto (por WebSocket)</h3>
+  <form id="addProductForm">
+    <input name="title" placeholder="title" required />
+    <input name="description" placeholder="description" required />
+    <input name="code" placeholder="code" required />
+    <input name="price" placeholder="price" type="number" required />
+    <input name="stock" placeholder="stock" type="number" required />
+    <input name="category" placeholder="category" required />
+    <button type="submit">Crear</button>
+  </form>
+</div>
+
+<h3>Lista de productos</h3>
+<ul id="productsList">
+  {{#if productos.length}}
+    {{#each productos}}
+      <li data-id="{{this._id}}">
+        <strong>{{this.title}}</strong> - ${{this.price}} - Stock: {{this.stock}} - ID: {{this._id}}
+        <button class="delete-btn" data-id="{{this._id}}">Eliminar</button>
+      </li>
+    {{/each}}
+  {{else}}
+    <li>No hay productos</li>
+  {{/if}}
+</ul>
+
+<p><a href="/products">Volver al home</a></p>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io();
+
+  const productsList = document.getElementById('productsList');
+  const addForm = document.getElementById('addProductForm');
+
+  function renderProducts(products) {
+    if (!Array.isArray(products) || products.length === 0) {
+      productsList.innerHTML = '<li>No hay productos</li>';
+      return;
+    }
+    productsList.innerHTML = products.map(p => (
+      `<li data-id="${p._id}"><strong>${p.title}</strong> - $${p.price} - Stock: ${p.stock} - ID: ${p._id} <button class="delete-btn" data-id="${p._id}">Eliminar</button></li>`
+    )).join('');
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-id');
+        socket.emit('deleteProduct', id);
+      });
+    });
+  }
+
+  socket.on('productsUpdated', (products) => {
+    renderProducts(products);
+  });
+
+  socket.on('errorMessage', (msg) => {
+    alert('Error: ' + msg);
+  });
+
+  addForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const data = {
+      title: form.title.value,
+      description: form.description.value,
+      code: form.code.value,
+      price: Number(form.price.value),
+      stock: Number(form.stock.value),
+      category: form.category.value
+    };
+    socket.emit('newProduct', data);
+    form.reset();
+  });
+</script>

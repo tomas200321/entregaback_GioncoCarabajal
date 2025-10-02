@@ -1,0 +1,75 @@
+{
+  "info": {
+    "name": "CS2-SkinShop-Full",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Listar productos",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/products"
+      }
+    },
+    {
+      "name": "Crear producto",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"title\": \"AK-47 Redline\", \"description\": \"Skin roja\", \"code\": \"AKR01\", \"price\": 150, \"status\": true, \"stock\": 5, \"category\": \"rifle\", \"thumbnails\": []}"
+        }
+      },
+      "url": {
+        "raw": "{{baseUrl}}/api/products"
+      }
+    },
+    {
+      "name": "Obtener producto por id",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/products/PRODUCT_ID"
+      }
+    },
+    {
+      "name": "Crear carrito",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/api/carts"
+      }
+    },
+    {
+      "name": "Agregar producto al carrito",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/api/carts/CART_ID/products/PRODUCT_ID"
+      }
+    },
+    {
+      "name": "Ver carrito",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/carts/CART_ID"
+      }
+    },
+    {
+      "name": "Eliminar producto del carrito",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/api/carts/CART_ID/products/PRODUCT_ID"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ]
+}
